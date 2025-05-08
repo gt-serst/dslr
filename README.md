@@ -27,7 +27,7 @@ Where:
 - **θ** is the vector of model parameters (weights).
 
 ### Loss function
-#### Binary Cross-Entropy evaluates how well the predicted probabilities align with the actual class labels. If the predicted value pp closely matches the true label yy, the resulting loss is small, reflecting an accurate prediction. On the other hand, the further the prediction is from the actual value, the larger the loss becomes, signaling a poor prediction. The use of logarithms in the formula ensures that wrong predictions are penalized more sharply than correct ones.
+#### Binary Cross-Entropy (BCE) evaluates how well the predicted probabilities align with the actual class labels. If the predicted value pp closely matches the true label yy, the resulting loss is small, reflecting an accurate prediction. On the other hand, the further the prediction is from the actual value, the larger the loss becomes, signaling a poor prediction. The use of logarithms in the formula ensures that wrong predictions are penalized more sharply than correct ones.
 ```math
 J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y_i \log(p_i) + (1 - y_i) \log(1 - p_i) \right]
 ```
@@ -35,6 +35,8 @@ Where:
 - **m** is the number of samples,
 - **y_i** is the true class label (0 or 1) for sample i,
 - **p_i** is the predicted probability for sample i.
+### Maximum likelihood estimation (MLE)
+#### The previous loss function comes directly from maximum likelihood estimation. MLE aims to find the parameters θ that maximize the probability of observing the training labels given the input features. By applying the log of the likelihood (to simplify the product into a sum), we derive the negative log-likelihood, which is exactly the binary cross-entropy cost function. Thus, when we minimize the BCE during training, we are effectively performing maximum likelihood estimation.
 ### Gradient descent
 #### To reduce the error, the gradient of the loss is calculated with respect to each model parameter, indicating the direction and rate at which the parameter should be changed.
 ```math
