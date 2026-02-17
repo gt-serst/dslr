@@ -64,14 +64,12 @@ def describe(series, col):
 	df.loc[col, "count"], df.loc[col, "mean"], df.loc[col, "std"], df.loc[col, "min"], df.loc[col, "25%"], df.loc[col, "50%"], df.loc[col, "75%"], df.loc[col, "max"] = count(series), mean(series), std(series), min(series), percentile_25(series), percentile_50(series), percentile_75(series), max(series)
 	return df
 
-df = pd.read_csv("dataset_train.csv")
-df.columns = df.columns.str.replace(" ", "_").str.lower()
-print(df.dtypes)
-print(df)
-print(df.describe())
-num_cols = df.select_dtypes(include=float).columns
-describe_df = pd.DataFrame()
-for col in ["index"] + list(num_cols):
-	describe_df = pd.concat([describe_df, describe(df[col], col)])
-describe_df = describe_df.T
-print(describe_df)
+if __name__ == '__main__':
+	df = pd.read_csv("dataset_train.csv")
+	df.columns = df.columns.str.replace(" ", "_").str.lower()
+	num_cols = df.select_dtypes(include=float).columns
+	describe_df = pd.DataFrame()
+	for col in ["index"] + list(num_cols):
+		describe_df = pd.concat([describe_df, describe(df[col], col)])
+	describe_df = describe_df.T
+	print(describe_df)
