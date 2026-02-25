@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
+import sys
 
 def count(series):
 	return len(series)
@@ -58,18 +59,32 @@ def max(series):
 			max_value = value
 	return max_value
 
+def count_na(series):
+	return len(series[series!=series])
+
 def describe(series, col):
-	series = series.dropna()
+	series_keeping_na_value = series
+	series = series[series==series]
 	df = pd.DataFrame(index=[col])
-	df.loc[col, "count"], df.loc[col, "mean"], df.loc[col, "std"], df.loc[col, "min"], df.loc[col, "25%"], df.loc[col, "50%"], df.loc[col, "75%"], df.loc[col, "max"] = count(series), mean(series), std(series), min(series), percentile_25(series), percentile_50(series), percentile_75(series), max(series)
+	df.loc[col, "count"], df.loc[col, "mean"], df.loc[col, "std"], df.loc[col, "min"], df.loc[col, "25%"], df.loc[col, "50%"], df.loc[col, "75%"], df.loc[col, "max"], df.loc[col, "na"] = count(series), mean(series), std(series), min(series), percentile_25(series), percentile_50(series), percentile_75(series), max(series), count_na(series_keeping_na_value)
 	return df
 
 if __name__ == '__main__':
-	df = pd.read_csv("dataset_train.csv")
-	df.columns = df.columns.str.replace(" ", "_").str.lower()
-	num_cols = df.select_dtypes(include=float).columns
-	describe_df = pd.DataFrame()
-	for col in ["index"] + list(num_cols):
-		describe_df = pd.concat([describe_df, describe(df[col], col)])
-	describe_df = describe_df.T
-	print(describe_df)
+
+	try:
+		df = pd.read_csv("dataset_train.csv")
+		df.columns = df.columns.str.replace(" ", "_").str.lower()
+		num_cols = df.select_dtypes(include=[int, float]).columns
+		describe_df = pd.DataFrame()
+		for col in list(num_cols):
+			describe_df = pd.concat([describe_df, describe(df[col], col)])
+		describe_df = describe_df.T
+		if describe_df.empty is False:
+			print(describe_df)
+		else:
+			print("Dataframe do not have numerical features.")
+		print(df.describe())
+	except FileNotFoundError as e:
+		print("Wrong file or file path:", e)
+	except Exception as e:
+		print("An unexpected error occurred:", e)

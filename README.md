@@ -7,15 +7,15 @@
 #### Data visualization
 ##### A set of scripts that generate histograms, scatter plots, and pair plots to help understand the distribution, correlation, and significance of the data.
 #### Logistic regression
-##### Implementation of a multi-class classifier using the one-vs-all logistic regression approach.
+##### Implementation of a binary classifier.
 ##### Two main programs:
 1. Training Program: Takes a training dataset as input, uses gradient descent to minimize the cost function, and saves the resulting coefficients to a file.
 2. Prediction Program: Takes a test dataset and a file containing the learned coefficients as inputs. It outputs a file with the predicted houses for the given students.
 ## A bit of math and logic
-### One vs. All
-#### It is possible to use a softmax regression model as a multi-classifier, but here it is required to use a one-vs-all strategy. The concept is to build a binary logistic regression for each class (house), where the output represents the probability of a student belonging to that specific house (class = 1) versus not belonging to it (class = 0). This probability is calculated using the sigmoid function. Since there are four houses, four separate classifiers are trained. During prediction, each model outputs a probability score, and the predicted house is the one associated with the highest probability.
-### Sigmoid function
-#### The model predicts a probability for each training example using the sigmoid function.
+### Logistic regression
+#### We will use a logistic regression to classify the student in their corresponding houses. The concept is to build a binary logistic regression for each class (house), where the output represents the probability of a student belonging to that specific house (class = 1) versus not belonging to it (class = 0). Since there are four houses, four separate classifiers are trained. During prediction, each model outputs a probability score, and the predicted house is the one associated with the highest probability.
+### Logistic function
+#### The model predicts a probability for each training example using a sigmoid function that outputs a number between 0 and 1.
 ```math
 \sigma(z) = \frac{1}{1 + e^{-z}}
 ```
@@ -26,8 +26,8 @@ Where:
 - **x** is the input feature vector (including a 1 for the bias term),
 - **θ** is the vector of model parameters (weights).
 
-### Loss function
-#### Binary Cross-Entropy (BCE) evaluates how well the predicted probabilities align with the actual class labels. If the predicted value pp closely matches the true label yy, the resulting loss is small, reflecting an accurate prediction. On the other hand, the further the prediction is from the actual value, the larger the loss becomes, signaling a poor prediction. The use of logarithms in the formula ensures that wrong predictions are penalized more sharply than correct ones.
+### Cost function
+#### The objective is to set the parameter vector to help the model estimates high probabilities for positive class and low probabilities for negative class. This function is called the log loss.
 ```math
 J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y_i \log(p_i) + (1 - y_i) \log(1 - p_i) \right]
 ```
@@ -35,10 +35,8 @@ Where:
 - **m** is the number of samples,
 - **y_i** is the true class label (0 or 1) for sample i,
 - **p_i** is the predicted probability for sample i.
-### Maximum likelihood estimation (MLE)
-#### The previous loss function comes directly from maximum likelihood estimation. MLE aims to find the parameters θ that maximize the probability of observing the training labels given the input features. By applying the log of the likelihood (to simplify the product into a sum), we derive the negative log-likelihood, which is exactly the binary cross-entropy cost function. Thus, when we minimize the BCE during training, we are effectively performing maximum likelihood estimation.
 ### Gradient descent
-#### To reduce the error, the gradient of the loss is calculated with respect to each model parameter, indicating the direction and rate at which the parameter should be changed.
+#### To reduce the error, we will use the gradient descent optimization algorithm to compute the value of θ that minimize the cost function.
 ```math
 \frac{\partial J(\theta)}{\partial \theta_j} = \frac{1}{m} \sum_{i=1}^{m} \left(p_i - y_i \right) x_{ij}
 ```
