@@ -19,5 +19,5 @@ if __name__ == '__main__':
 				plt.show()
 	except FileNotFoundError as e:
 		print("Wrong file or file path:", e)
-	except Exception as e:
+	except BaseException as e:
 		print("An unexpected error occurred:", e)

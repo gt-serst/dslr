@@ -72,19 +72,22 @@ def describe(series, col):
 if __name__ == '__main__':
 
 	try:
-		df = pd.read_csv("dataset_train.csv")
-		df.columns = df.columns.str.replace(" ", "_").str.lower()
-		num_cols = df.select_dtypes(include=[int, float]).columns
-		describe_df = pd.DataFrame()
-		for col in list(num_cols):
-			describe_df = pd.concat([describe_df, describe(df[col], col)])
-		describe_df = describe_df.T
-		if describe_df.empty is False:
-			print(describe_df)
+		if len(sys.argv) == 2:
+			df = pd.read_csv(sys.argv[1])
+			df.columns = df.columns.str.replace(" ", "_").str.lower()
+			num_cols = df.select_dtypes(include=[int, float]).columns
+			describe_df = pd.DataFrame()
+			for col in list(num_cols):
+				describe_df = pd.concat([describe_df, describe(df[col], col)])
+			describe_df = describe_df.T
+			if describe_df.empty is False:
+				print(describe_df)
+			else:
+				raise Exception("dataframe do not have numerical features")
+			print(df.describe())
 		else:
-			print("Dataframe do not have numerical features.")
-		print(df.describe())
+			raise BaseException("program must take one argument")
 	except FileNotFoundError as e:
 		print("Wrong file or file path:", e)
-	except Exception as e:
+	except BaseException as e:
 		print("An unexpected error occurred:", e)
