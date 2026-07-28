@@ -2,11 +2,11 @@ import sys
 import pandas as pd
 import numpy as np
 from utils import predict_belongs_to_house
-from model import compute_error
+from model import compute_error, calculate_thetas_gradient
 
 if __name__ == '__main__':
 
-	try:
+	# try:
 		if len(sys.argv) == 2:
 			df = pd.read_csv(sys.argv[1])
 			df.columns = df.columns.str.replace(" ", "_").str.lower()
@@ -30,19 +30,39 @@ if __name__ == '__main__':
 			# Standardize numerical features
 			for col in num_features:
 				X[col] = (X[col] - X[col].mean()) / X[col].std()
-			thetas_array = []
-			for i in enumerate(X.columns):
-				thetas_array.append(0)
-			print(thetas_array)
-			predict_belongs_to_house(X, thetas_array)
-			print(y)
+			# Add a bias
+			bias_series = pd.Series(1)
+			X["bias"] = 1.0
+			bias = X["bias"]
+			X.drop(labels=["bias"], axis=1, inplace = True)
+			X.insert(0, "bias", bias)
+			# thetas_array = []
+			# for i in enumerate(X.columns):
+			# 	thetas_array.append(0)
+			# Initialize thetas to 0
+			thetas_array = np.zeros(len(X.columns))
+			alpha = 1
+			# We will loop over the houses to predict but start with the first one
 			houses_to_predict = y.unique()
-			compute_error(X, y, houses_to_predict[0])
+			print(houses_to_predict[0])
+			y_binary = np.where(y == houses_to_predict[0], 1, 0)
+			# Predict with sigmoid function
+			y_pred = predict_belongs_to_house(X, thetas_array)
+			# Compute error between prediction and target vector with logloss function
+			cost = compute_error(X, y_binary, y_pred)
+			print(cost)
+			# Compute gradient and update thetas
+			thetas_array, y_pred = calculate_thetas_gradient(alpha, thetas_array, X, y_binary, y_pred)
+			print(houses_to_predict[0])
+			print(df["hogwarts_house"])
+			df["y_pred"] = y_pred
+			print(y_pred)
+			df.to_excel("pred.xlsx")
 		else:
 			raise BaseException("program must take one argument")
-	except FileNotFoundError as e:
-		print("Wrong file or file path:", e)
-	except BaseException as e:
-		print("An unexpected error occurred:", e)
+	# except FileNotFoundError as e:
+	# 	print("Wrong file or file path:", e)
+	# except BaseException as e:
+	# 	print("An unexpected error occurred:", e)
 
 
