@@ -12,17 +12,17 @@ def calculate_gradient(y_pred, y_binary, X):
 	m = len(X)
 	return (1/m) * X.T.dot(y_pred - y_binary)
 
-def gradient_descent(alpha, thetas_array, X, y_binary, max_iterations=10000):
+def gradient_descent(X, y_binary, alpha, epochs, batch_size, thetas_array):
 	epsilon = 1e-6
 	previous_cost = None
 	cost_history = []
-	for iteration in range(max_iterations):
+	for epoch in range(epochs):
 		# Predict with sigmoid function
 		y_pred = predict_belongs_to_house(X, thetas_array)
 		# Compute error between prediction and target vector with logloss function
 		cost = compute_error(X, y_binary, y_pred)
-		if iteration % 100 == 0:
-			print(iteration, cost)
+		if epochs % 100 == 0:
+			print(f"Epoch {epoch}, Cost: {cost}")
 		cost_history.append(cost)
 		if previous_cost is not None:
 			# Stop if the cost is no longer decreasing significantly

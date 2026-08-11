@@ -44,13 +44,15 @@ if __name__ == '__main__':
 			# Initialize thetas to 0
 			thetas_array = np.zeros((4, X.shape[1]))
 			alpha = 1
+			epochs = 10000
+			batch_size = len(X)
 			# We will loop over the houses to predict but start with the first one
 			houses_to_predict = y.unique()
 			for i, house in enumerate(houses_to_predict):
-				print(house)
+				print(f"House: {house}")
 				y_binary = np.where(y == house, 1, 0)
 				# Launch gradient descent optimization
-				thetas_array[i] = gradient_descent(alpha, thetas_array[i], X, y_binary)
+				thetas_array[i] = gradient_descent(X, y_binary, alpha, epochs, batch_size, thetas_array[i])
 				y_pred = predict_belongs_to_house(X, thetas_array[i])
 				df["y_pred"] = y_pred
 				df.to_excel(f"pred_{house.lower()}.xlsx")
