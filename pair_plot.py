@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 if __name__ == '__main__':
-
 	try:
 		df = pd.read_csv("dataset_train.csv")
 		df.columns = df.columns.str.replace(" ", "_").str.lower()

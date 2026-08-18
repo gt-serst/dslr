@@ -70,7 +70,6 @@ def describe(series, col):
 	return df
 
 if __name__ == '__main__':
-
 	try:
 		if len(sys.argv) == 2:
 			df = pd.read_csv(sys.argv[1])
